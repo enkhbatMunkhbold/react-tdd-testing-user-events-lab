@@ -2,6 +2,7 @@ import { render, screen } from "@testing-library/react";
 import '@testing-library/jest-dom';
 
 import App from "../App";
+import userEvent from "@testing-library/user-event";
 
 // Portfolio Elements
 test("displays a top-level heading with the text `Hi, I'm _______`", () => {
@@ -66,20 +67,34 @@ test("displays the correct links", () => {
 
 // Newsletter Form - Initial State
 test("the form includes text inputs for name and email address", () => {
-  // your test code here
+  
+  render(<App />);
+  expect(screen.getByLabelText(/name/i)).toBeInTheDocument();
+  expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
 });
 
 test("the form includes three checkboxes to select areas of interest", () => {
-  // your test code here
+  render(<App />);
+  expect(screen.getAllByRole("checkbox").length).toBe(3);
 });
 
 test("the checkboxes are initially unchecked", () => {
-  // your test code here
+  render(<App />);
+  expect(screen.getByRole("checkbox", { name: /world news/i })).not.toBeChecked();
+  expect(screen.getByRole("checkbox", { name: /sport news/i })).not.toBeChecked();
+  expect(screen.getByRole("checkbox", { name: /local news/i })).not.toBeChecked();
 });
 
 // Newsletter Form - Adding Responses
-test("the page shows information the user types into the name and email address form fields", () => {
-  // your test code here
+test("the page shows; information the user types into the name and email address form fields", () => {
+  render(<App />)
+  const nameInput = screen.getByLabelText(/name/i);
+  const emailInput = screen.getByLabelText(/email/i);
+
+  userEvent.type(nameInput, "Freddie {enter}Mercury");
+  expect(nameInput.value).toBe("Freddie Mercury");
+  userEvent.type(emailInput, "freddieMercury@gueen.com");
+  expect(emailInput.value).toBe("freddieMercury@gueen.com");
 });
 
 test("checked status of checkboxes changes when user clicks them", () => {
